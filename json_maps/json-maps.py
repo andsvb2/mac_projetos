@@ -1,18 +1,10 @@
 import urllib.request, urllib.parse, urllib.error
 import json
 import ssl
-# from turtledemo.minimal_hanoi import play
+import api_key as ak
 
-api_key = False
-# If you have a Google Places API key, enter it here
-# api_key = 'AIzaSy___IDByT70'
-# https://developers.google.com/maps/documentation/geocoding/intro
-
-if api_key is False:
-    api_key = 42
-    serviceurl = "http://py4e-data.dr-chuck.net/json?"
-else :
-    serviceurl = "https://maps.googleapis.com/maps/api/geocode/json?"
+api_key = ak.apiKey
+serviceurl ="https://api.geoapify.com/v1/geocode/search?"
 
 # Ignore SSL certificate errors
 ctx = ssl.create_default_context()
@@ -25,33 +17,40 @@ while True:
         break
 
     parms = dict()
-    parms['address'] = endereco
-    print(parms)
-    if api_key is not False:
-        parms['key'] = api_key
-    url = serviceurl + urllib.parse.urlencode(parms)
-    print(url)
+    parms['text'] = endereco
+    parms['lang'] = 'pt'
+    parms['limit'] = 1
+    parms['format'] = 'json'
+    parms['apiKey'] = api_key
 
-    print('Retrieving', url)
+    url = serviceurl + urllib.parse.urlencode(parms)
+
+    print('Requisitando', url)
     uh = urllib.request.urlopen(url, context=ctx)
     data = uh.read().decode()
-    # print(data)
-    print('Retrieved', len(data), 'characters')
+    print('Recebidos', len(data), 'caracteres.')
 
     try:
         js = json.loads(data)
     except:
         js = None
 
-    if not js or 'status' not in js or js['status'] != 'OK':
-        print('==== Failure To Retrieve ====')
-        print(data)
-        continue
+    print(json.dumps(js, ensure_ascii=False, indent=4))
 
-    print(json.dumps(js, ensure_ascii=False, indent=4))# Imprime todo o conteúdo do arquivo, já com indentação
+    if parms['format'] == 'json':
+        endereco_formatado = js['results'][0]['formatted']
+        id_lugar = js['results'][0]['place_id']
+        cep = js['results'][0]['postcode']
+    else:
+        endereco_formatado = js['features']['results'][0]['formatted']
+        id_lugar = js['features'][0]['properties']['place_id']
+        cep = js['features'][0]['properties']['postcode']
 
-    id_lugar = js['results'][0]['place_id']
-    print(f"\nID do lugar: {id_lugar}")
+    if endereco_formatado is not False:
+        print(f"\nO endereço é: {endereco_formatado}")
 
-    plus_code = js['results'][0]['plus_code']['global_code']
-    print(f"Global code: {plus_code}\n")
+    if id_lugar is not False:
+        print(f"ID do lugar: {id_lugar}")
+
+    if cep is not False:
+        print(f"O CEP é {cep}.\n")
