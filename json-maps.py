@@ -1,7 +1,7 @@
 import urllib.request, urllib.parse, urllib.error
 import json
 import ssl
-from turtledemo.minimal_hanoi import play
+# from turtledemo.minimal_hanoi import play
 
 api_key = False
 # If you have a Google Places API key, enter it here
