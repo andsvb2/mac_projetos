@@ -26,6 +26,7 @@ while True:
 
     parms = dict()
     parms['address'] = endereco
+    parms['language'] = 'pt-BR'
     print(parms)
     if api_key is not False:
         parms['key'] = api_key
@@ -53,5 +54,5 @@ while True:
     id_lugar = js['results'][0]['place_id']
     print(f"\nID do lugar: {id_lugar}")
 
-    plus_code = js['results'][0]['plus_code']['global_code']
-    print(f"Global code: {plus_code}\n")
+    # plus_code = js['results'][0]['plus_code']['global_code']
+    # print(f"Global code: {plus_code}\n")
