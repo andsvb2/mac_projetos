@@ -25,10 +25,10 @@ while True:
 
     url = serviceurl + urllib.parse.urlencode(parms)
 
-    print('Requisitando', url)
+    print(f"\nRequisitando: {url}")
     uh = urllib.request.urlopen(url, context=ctx)
     data = uh.read().decode()
-    print('Recebidos', len(data), 'caracteres.')
+    print(f"Recebidos {len(data)} caracteres.\n")
 
     try:
         js = json.loads(data)
